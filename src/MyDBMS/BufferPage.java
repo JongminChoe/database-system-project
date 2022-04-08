@@ -33,12 +33,13 @@ public class BufferPage {
         this.index = index;
         this.payload = payload;
         this.lock = new ReentrantReadWriteLock();
-        this.dirty = false;
+        this.dirty = true;
     }
 
     public void readFromFile(RandomAccessFile file) throws IOException {
         file.seek(this.index * PAGE_SIZE);
         file.read(this.payload);
+        this.dirty = false;
     }
 
     public void flush() throws IOException {
