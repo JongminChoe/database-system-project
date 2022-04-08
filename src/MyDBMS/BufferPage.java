@@ -14,7 +14,7 @@ public class BufferPage {
     private ReadWriteLock lock;
     private boolean dirty;
 
-    public BufferPage(String fileName, int index) throws IOException {
+    public BufferPage(String fileName, long index) throws IOException {
         this(fileName, index, new byte[PAGE_SIZE]);
 
         RandomAccessFile file = new RandomAccessFile(fileName, "r");
@@ -22,13 +22,13 @@ public class BufferPage {
         file.close();
     }
 
-    public BufferPage(String fileName, int index, RandomAccessFile file) throws IOException {
+    public BufferPage(String fileName, long index, RandomAccessFile file) throws IOException {
         this(fileName, index, new byte[PAGE_SIZE]);
 
         this.readFromFile(file);
     }
 
-    public BufferPage(String fileName, int index, byte[] payload) {
+    public BufferPage(String fileName, long index, byte[] payload) {
         this.fileName = fileName;
         this.index = index;
         this.payload = payload;
