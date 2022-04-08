@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Stack;
 
 public class BufferManager {
-    public static final int BUFFER_LIMIT = 100;
+    public static final int BUFFER_CAPACITY = 100;
 
     public Stack<BufferPage> buffer;
 
@@ -30,7 +30,7 @@ public class BufferManager {
         // page not found in buffer
         BufferPage page = new BufferPage(key, index);
 
-        if (buffer.size() >= BUFFER_LIMIT) {
+        if (buffer.size() >= BUFFER_CAPACITY) {
             // MRU
             buffer.pop().flush();
         }
