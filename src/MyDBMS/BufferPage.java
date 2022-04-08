@@ -54,6 +54,8 @@ public class BufferPage {
         file.close();
 
         this.writeUnlock();
+
+        this.dirty = false;
     }
 
     public void readLock() {
