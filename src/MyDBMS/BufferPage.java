@@ -75,6 +75,18 @@ public class BufferPage {
     }
 
     public boolean isDirty() {
-        return dirty;
+        return this.dirty;
+    }
+
+    public String getFileName() {
+        return this.fileName;
+    }
+
+    public long getIndex() {
+        return this.index;
+    }
+
+    public byte[] getPayload() {
+        return this.payload;
     }
 }
