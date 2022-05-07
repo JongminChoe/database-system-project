@@ -53,6 +53,28 @@ class RecordTest {
     }
 
     @Test
+    void testSetCharColumnToNull() {
+        Record record = new Record(new Column[]{
+                new Column(Column.DataType.CHAR, "test", 16)
+        });
+        record.setChar("test", "hello world");
+        record.setChar("test", null);
+
+        assertNull(record.getChar("test"));
+    }
+
+    @Test
+    void testSetVarcharColumnToNull() {
+        Record record = new Record(new Column[]{
+                new Column(Column.DataType.VARCHAR, "test", 16)
+        });
+        record.setVarchar("test", "hello world");
+        record.setVarchar("test", null);
+
+        assertNull(record.getVarchar("test"));
+    }
+
+    @Test
     void testSingleCharColumnRecordToBytes() {
         Record record = new Record(new Column[]{
                 new Column(Column.DataType.CHAR, "test", 16)
