@@ -107,4 +107,26 @@ class RecordTest {
         Throwable throwable = assertThrows(IllegalArgumentException.class, () -> record.setChar("varchar_type", "hello world"));
         assertEquals("Column [varchar_type] is not CHAR type", throwable.getMessage());
     }
+
+    @Test
+    void testSingleCharColumnRecordFromBytes() {
+        Record record = new Record(new Column[]{
+                new Column(Column.DataType.CHAR, "test", 16)
+        }, "hello world     \0".getBytes());
+
+        assertEquals("hello world     ", record.getChar("test"));
+    }
+    
+    @Test
+    void testSingleVarcharColumnRecordFromBytes() {
+        byte[] payload = "\0\0\0\0\0hello world".getBytes();
+        payload[1] = 5;
+        payload[3] = (byte) "hello world".length();
+        
+        Record record = new Record(new Column[]{
+                new Column(Column.DataType.VARCHAR, "test", 16)
+        }, payload);
+
+        assertEquals("hello world", record.getVarchar("test"));
+    }
 }
