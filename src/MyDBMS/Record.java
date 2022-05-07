@@ -40,10 +40,10 @@ public class Record {
 
         byte[] nullBytes = new byte[this.getNullBitmapLength()];
         stream.get(nullBytes);
-        BitSet nullBitmap = BitSet.valueOf(nullBytes);
+        Bitmap nullBitmap = new Bitmap(nullBytes);
 
         for (int columnIndex = 0; columnIndex < this.columnBlueprints.length; columnIndex++) {
-            if (nullBitmap.get(nullBitmap.length() - columnIndex - 1)) {
+            if (nullBitmap.get(columnIndex)) {
                 this.columnData.put(this.columnBlueprints[columnIndex].getName(), null);
             }
         }
@@ -73,7 +73,7 @@ public class Record {
         }
         position += this.getNullBitmapLength();
 
-        BitSet nullBitmap = BitSet.valueOf(new byte[this.getNullBitmapLength()]);
+        Bitmap nullBitmap = new Bitmap(this.columnBlueprints.length);
 
         for (int columnIndex = 0; columnIndex < this.columnBlueprints.length; columnIndex++) {
             Column columnBlueprint = this.columnBlueprints[columnIndex];
@@ -93,7 +93,7 @@ public class Record {
             }
 
             if (data == null) {
-                nullBitmap.set(nullBitmap.length() - columnIndex - 1);
+                nullBitmap.set(columnIndex);
             }
         }
         stream.put(nullBitmap.toByteArray());
