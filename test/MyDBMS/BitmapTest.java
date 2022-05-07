@@ -8,17 +8,17 @@ class BitmapTest {
 
     @Test
     void testConstructorWithSize() {
-        assertArrayEquals(new byte[0], new Bitmap(0).getByteArray());
+        assertArrayEquals(new byte[0], new Bitmap(0).toByteArray());
 
-        assertArrayEquals(new byte[1], new Bitmap(1).getByteArray());
-        assertArrayEquals(new byte[1], new Bitmap(8).getByteArray());
+        assertArrayEquals(new byte[1], new Bitmap(1).toByteArray());
+        assertArrayEquals(new byte[1], new Bitmap(8).toByteArray());
 
-        assertArrayEquals(new byte[2], new Bitmap(9).getByteArray());
+        assertArrayEquals(new byte[2], new Bitmap(9).toByteArray());
     }
 
     @Test
     void testConstructorWithData() {
-        assertArrayEquals(new byte[]{ 0, 1 }, new Bitmap(new byte[]{ 0, 1 }).getByteArray());
+        assertArrayEquals(new byte[]{ 0, 1 }, new Bitmap(new byte[]{ 0, 1 }).toByteArray());
     }
 
     @Test
@@ -81,11 +81,11 @@ class BitmapTest {
     }
 
     @Test
-    void testGetByteArray() {
+    void testToByteArray() {
         Bitmap bitmap = new Bitmap(1);
 
         bitmap.set(0);
-        assertArrayEquals(new byte[]{(byte) 128}, bitmap.getByteArray());
+        assertArrayEquals(new byte[]{(byte) 128}, bitmap.toByteArray());
     }
 
     @Test

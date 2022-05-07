@@ -27,7 +27,7 @@ class Bitmap {
         return (this.data[index / 8] & (1 << (7 - index % 8))) > 0;
     }
 
-    public byte[] getByteArray() {
+    public byte[] toByteArray() {
         return this.data;
     }
 }
