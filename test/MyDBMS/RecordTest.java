@@ -28,7 +28,8 @@ class RecordTest {
                 new Column(Column.DataType.CHAR, "test", 16)
         });
 
-        assertNull(record.getChar("non_existent_column"));
+        Throwable throwable = assertThrows(IllegalArgumentException.class, () -> record.getChar("non_existent_column"));
+        assertEquals("Column [non_existent_column] does not exists", throwable.getMessage());
     }
 
     @Test
@@ -78,11 +79,10 @@ class RecordTest {
     @Test
     void testSetInvalidColumnType() {
         Record record = new Record(new Column[]{
-                new Column(Column.DataType.VARCHAR, "test", 16)
+                new Column(Column.DataType.VARCHAR, "varchar_type", 16)
         });
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            record.setChar("test", "hello world");
-        });
+        Throwable throwable = assertThrows(IllegalArgumentException.class, () -> record.setChar("varchar_type", "hello world"));
+        assertEquals("Column [varchar_type] is not CHAR type", throwable.getMessage());
     }
 }
