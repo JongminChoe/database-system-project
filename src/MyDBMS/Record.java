@@ -156,10 +156,13 @@ public class Record {
             throw new IllegalArgumentException("Column [" + columnName + "] is not CHAR type");
         }
 
-        byte[] data = new byte[columnBlueprint.getSize()];
-        Arrays.fill(data, (byte) ' ');
-        byte[] byteValue = value.getBytes();
-        System.arraycopy(byteValue, 0, data, 0, Math.min(byteValue.length, data.length));
+        byte[] data = null;
+        if (value != null) {
+            data = new byte[columnBlueprint.getSize()];
+            Arrays.fill(data, (byte) ' ');
+            byte[] byteValue = value.getBytes();
+            System.arraycopy(byteValue, 0, data, 0, Math.min(byteValue.length, data.length));
+        }
 
         this.columnData.put(columnBlueprint.getName(), data);
         return this;
@@ -174,7 +177,7 @@ public class Record {
             throw new IllegalArgumentException("Column [" + columnName + "] is not VARCHAR type");
         }
 
-        this.columnData.put(columnBlueprint.getName(), value.getBytes());
+        this.columnData.put(columnBlueprint.getName(), value == null ? null : value.getBytes());
         return this;
     }
 }
