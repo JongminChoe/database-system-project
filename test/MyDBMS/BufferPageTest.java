@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,18 +20,14 @@ class BufferPageTest {
 
     @Test
     void testPageFromNonExistentFile() {
-        assertThrows(FileNotFoundException.class, () -> {
-            new BufferPage("NonExistentFileName", 0);
-        });
+        assertThrows(FileNotFoundException.class, () -> new BufferPage("NonExistentFileName", 0));
     }
 
     @Test
     void testPayloadEqualsOnIndex0() {
         // dummy payload
         byte[] payload = new byte[BufferPage.PAGE_SIZE];
-        for (int i = 0; i < payload.length; i++) {
-            payload[i] = 'A';
-        }
+        Arrays.fill(payload, (byte) 'A');
         BufferPage page = new BufferPage("TestPage", 0, payload);
 
         assertDoesNotThrow(page::flush);
@@ -50,9 +47,7 @@ class BufferPageTest {
     void testPayloadEqualsOnIndex1() {
         // dummy payload
         byte[] payload = new byte[BufferPage.PAGE_SIZE];
-        for (int i = 0; i < payload.length; i++) {
-            payload[i] = 'B';
-        }
+        Arrays.fill(payload, (byte) 'B');
         BufferPage page = new BufferPage("TestPage", 1, payload);
 
         assertDoesNotThrow(page::flush);
