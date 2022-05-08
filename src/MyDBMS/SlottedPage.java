@@ -33,7 +33,7 @@ public class SlottedPage {
             Record record = null;
             if (recordLength > 0) {
                 byte[] recordBytes = new byte[recordLength];
-                stream.get(recordBytes, recordStartOffset, recordBytes.length);
+                stream.slice(recordStartOffset, recordBytes.length).get(recordBytes);
                 record = new Record(this.table, recordBytes);
             }
             this.entries.add(record);
