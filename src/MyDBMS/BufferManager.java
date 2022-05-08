@@ -75,4 +75,8 @@ public class BufferManager {
         }
         this.buffer.clear();
     }
+
+    public void forceFlush() {
+        this.buffer.clear();
+    }
 }
