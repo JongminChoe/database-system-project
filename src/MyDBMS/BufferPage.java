@@ -8,10 +8,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class BufferPage {
     public static final int PAGE_SIZE = 4096;
 
-    private String fileName;
-    private long index;
-    private byte[] payload;
-    private ReadWriteLock lock;
+    private final String fileName;
+    private final long index;
+    private final byte[] payload;
+    private final ReadWriteLock lock;
     private boolean dirty;
 
     public BufferPage(String fileName, long index) throws IOException {
