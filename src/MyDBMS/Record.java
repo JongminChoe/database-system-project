@@ -6,24 +6,18 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class Record {
+    private final Table table;
     private final Column[] columnBlueprints;
     private final HashMap<String, byte[]> columnData;
 
     public Record(Table table, byte[] payload) {
-        this(table.getColumns(), payload);
-    }
-
-    public Record(Column[] columns, byte[] payload) {
-        this(columns);
+        this(table);
         this.parseBytes(payload);
     }
 
     public Record(Table table) {
-        this(table.getColumns());
-    }
-
-    public Record(Column[] columns) {
-        this.columnBlueprints = columns;
+        this.table = table;
+        this.columnBlueprints = table.getColumns();
         this.columnData = new LinkedHashMap<>(columnBlueprints.length);
         for (Column columnBlueprint : this.columnBlueprints) {
             this.columnData.put(columnBlueprint.getName(), null);
@@ -117,6 +111,10 @@ public class Record {
         byte[] result = new byte[position];
         stream.get(0, result);
         return result;
+    }
+
+    public String getTableName() {
+        return this.table.getTableName();
     }
 
     public String getChar(String columnName) {

@@ -8,23 +8,28 @@ class RecordTest {
 
     @Test
     void testNoColumns() {
-        assertArrayEquals(new byte[0], new Record(new Column[0]).toByteArray());
+        assertArrayEquals(new byte[0], new Record(new Table("test_table", new Column[0])).toByteArray());
+    }
+
+    @Test
+    void testGetTableName() {
+        assertEquals("test_table", new Record(new Table("test_table", new Column[0])).getTableName());
     }
 
     @Test
     void testUnsettedColumn() {
-        Record record = new Record(new Column[]{
+        Record record = new Record(new Table("test_table", new Column[]{
                 new Column(Column.DataType.CHAR, "test", 16)
-        });
+        }));
 
         assertNull(record.getChar("test"));
     }
 
     @Test
     void testNonExistentColumn() {
-        Record record = new Record(new Column[]{
+        Record record = new Record(new Table("test_table", new Column[]{
                 new Column(Column.DataType.CHAR, "test", 16)
-        });
+        }));
 
         Throwable throwable = assertThrows(IllegalArgumentException.class, () -> record.getChar("non_existent_column"));
         assertEquals("Column [non_existent_column] does not exists", throwable.getMessage());
@@ -32,9 +37,9 @@ class RecordTest {
 
     @Test
     void testSingleCharColumnRecord() {
-        Record record = new Record(new Column[]{
+        Record record = new Record(new Table("test_table", new Column[]{
                 new Column(Column.DataType.CHAR, "test", 16)
-        });
+        }));
         record.setChar("test", "hello world");
 
         assertEquals("hello world     ", record.getChar("test"));
@@ -42,9 +47,9 @@ class RecordTest {
 
     @Test
     void testSingleVarcharColumnRecord() {
-        Record record = new Record(new Column[]{
+        Record record = new Record(new Table("test_table", new Column[]{
                 new Column(Column.DataType.VARCHAR, "test", 16)
-        });
+        }));
         record.setVarchar("test", "hello world");
 
         assertEquals("hello world", record.getVarchar("test"));
@@ -52,9 +57,9 @@ class RecordTest {
 
     @Test
     void testSetCharColumnToNull() {
-        Record record = new Record(new Column[]{
+        Record record = new Record(new Table("test_table", new Column[]{
                 new Column(Column.DataType.CHAR, "test", 16)
-        });
+        }));
         record.setChar("test", "hello world");
         record.setChar("test", null);
 
@@ -63,9 +68,9 @@ class RecordTest {
 
     @Test
     void testSetVarcharColumnToNull() {
-        Record record = new Record(new Column[]{
+        Record record = new Record(new Table("test_table", new Column[]{
                 new Column(Column.DataType.VARCHAR, "test", 16)
-        });
+        }));
         record.setVarchar("test", "hello world");
         record.setVarchar("test", null);
 
@@ -74,9 +79,9 @@ class RecordTest {
 
     @Test
     void testSingleCharColumnRecordToBytes() {
-        Record record = new Record(new Column[]{
+        Record record = new Record(new Table("test_table", new Column[]{
                 new Column(Column.DataType.CHAR, "test", 16)
-        });
+        }));
         record.setChar("test", "hello world");
 
         assertArrayEquals("hello world     \0".getBytes(), record.toByteArray());
@@ -84,9 +89,9 @@ class RecordTest {
 
     @Test
     void testSingleVarcharColumnRecordToBytes() {
-        Record record = new Record(new Column[]{
+        Record record = new Record(new Table("test_table", new Column[]{
                 new Column(Column.DataType.VARCHAR, "test", 16)
-        });
+        }));
         record.setVarchar("test", "hello world");
 
         byte[] expected = "\0\0\0\0\0hello world".getBytes();
@@ -98,9 +103,9 @@ class RecordTest {
 
     @Test
     void testSetInvalidColumnType() {
-        Record record = new Record(new Column[]{
+        Record record = new Record(new Table("test_table", new Column[]{
                 new Column(Column.DataType.VARCHAR, "varchar_type", 16)
-        });
+        }));
 
         Throwable throwable = assertThrows(IllegalArgumentException.class, () -> record.setChar("varchar_type", "hello world"));
         assertEquals("Column [varchar_type] is not CHAR type", throwable.getMessage());
@@ -108,9 +113,9 @@ class RecordTest {
 
     @Test
     void testSingleCharColumnRecordFromBytes() {
-        Record record = new Record(new Column[]{
+        Record record = new Record(new Table("test_table", new Column[]{
                 new Column(Column.DataType.CHAR, "test", 16)
-        }, "hello world     \0".getBytes());
+        }), "hello world     \0".getBytes());
 
         assertEquals("hello world     ", record.getChar("test"));
     }
@@ -121,9 +126,9 @@ class RecordTest {
         payload[1] = 5;
         payload[3] = (byte) "hello world".length();
         
-        Record record = new Record(new Column[]{
+        Record record = new Record(new Table("test_table", new Column[]{
                 new Column(Column.DataType.VARCHAR, "test", 16)
-        }, payload);
+        }), payload);
 
         assertEquals("hello world", record.getVarchar("test"));
     }
