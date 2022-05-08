@@ -66,7 +66,7 @@ public class Record {
         return (this.columnBlueprints.length + 7) / 8;
     }
 
-    public byte[] getBytes() {
+    public byte[] toByteArray() {
         ByteBuffer stream = ByteBuffer.allocate(4090);
 
         int position = 0;

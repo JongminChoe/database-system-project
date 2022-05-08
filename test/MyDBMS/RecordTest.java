@@ -8,7 +8,7 @@ class RecordTest {
 
     @Test
     void testNoColumns() {
-        assertArrayEquals(new byte[0], new Record(new Column[0]).getBytes());
+        assertArrayEquals(new byte[0], new Record(new Column[0]).toByteArray());
     }
 
     @Test
@@ -79,7 +79,7 @@ class RecordTest {
         });
         record.setChar("test", "hello world");
 
-        assertArrayEquals("hello world     \0".getBytes(), record.getBytes());
+        assertArrayEquals("hello world     \0".getBytes(), record.toByteArray());
     }
 
     @Test
@@ -93,7 +93,7 @@ class RecordTest {
         expected[1] = 5;
         expected[3] = (byte) "hello world".length();
 
-        assertArrayEquals(expected, record.getBytes());
+        assertArrayEquals(expected, record.toByteArray());
     }
 
     @Test
