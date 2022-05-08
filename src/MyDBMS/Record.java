@@ -185,4 +185,16 @@ public class Record {
         this.columnData.put(columnBlueprint.getName(), value == null ? null : value.getBytes());
         return this;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Record record)) return false;
+        if (!this.table.equals(record.table)) return false;
+        if (!this.columnData.keySet().equals(record.columnData.keySet())) return false;
+        for (String key : this.columnData.keySet()) {
+            if (!Arrays.equals(this.columnData.get(key), record.columnData.get(key))) return false;
+        }
+        return true;
+    }
 }
