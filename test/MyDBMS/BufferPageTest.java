@@ -86,6 +86,6 @@ class BufferPageTest {
     @Test
     @Order(6)
     void testIndexOutOfFileBound() {
-        assertThrows(IndexOutOfBoundsException.class, () -> new BufferPage("TestPage", 2));
+        assertThrows(IOException.class, () -> new BufferPage("TestPage", 2));
     }
 }
