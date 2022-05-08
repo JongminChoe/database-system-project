@@ -10,9 +10,17 @@ public class Record {
     private final Column[] columnBlueprints;
     private final HashMap<String, byte[]> columnData;
 
+    public Record(Table table, byte[] payload) {
+        this(table.getColumns(), payload);
+    }
+
     public Record(Column[] columns, byte[] payload) {
         this(columns);
         this.parseBytes(payload);
+    }
+
+    public Record(Table table) {
+        this(table.getColumns());
     }
 
     public Record(Column[] columns) {
