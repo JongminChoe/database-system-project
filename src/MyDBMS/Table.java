@@ -1,6 +1,8 @@
 package MyDBMS;
 
+import java.io.IOException;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class Table {
     private final String tableName;
@@ -17,6 +19,20 @@ public class Table {
 
     public Column[] getColumns() {
         return this.columns;
+    }
+
+    public Stream<Record> getAllRecords() {
+        return Stream
+                .iterate(0, n -> n + 1)
+                .map(i -> {
+                    try {
+                        return BufferManager.getInstance().get(this.getTableName(), i);
+                    } catch (IOException e) {
+                        return null;
+                    }
+                })
+                .takeWhile(Objects::nonNull)
+                .flatMap(page -> new SlottedPage(this, page.getPayload()).getRecords().stream());
     }
 
     @Override
