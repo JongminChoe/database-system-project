@@ -92,4 +92,22 @@ class SlottedPageTest {
         System.arraycopy(recordBytes, 0, pageBytes, pageBytes.length - recordBytes.length, recordBytes.length);
         assertArrayEquals(pageBytes, page.toByteArray());
     }
+
+    @Test
+    void testParseBytes() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "test", 16)
+        });
+        SlottedPage page = new SlottedPage(table);
+
+        Record record = new Record(table);
+        record.setChar("test", "hello world");
+
+        page.addRecord(record);
+
+        page = new SlottedPage(table, page.toByteArray());
+
+        assertEquals(1, page.getNumberOfEntries());
+        assertEquals(record, page.getRecords().get(0));
+    }
 }
