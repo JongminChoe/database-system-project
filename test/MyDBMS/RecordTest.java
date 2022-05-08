@@ -132,4 +132,22 @@ class RecordTest {
 
         assertEquals("hello world", record.getVarchar("test"));
     }
+
+    @Test
+    void testEquals() {
+        Record record1 = new Record(new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "test", 16)
+        })).setChar("test", "hello world");
+
+        Record record2 = new Record(new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "test", 16)
+        })).setChar("test", "hello world");
+
+        Record record3 = new Record(new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "test", 16)
+        })).setChar("test", "hi world");
+
+        assertEquals(record1, record2);
+        assertNotEquals(record1, record3);
+    }
 }
