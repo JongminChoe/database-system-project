@@ -29,6 +29,8 @@ public class BufferPage {
     }
 
     public BufferPage(String fileName, long index, byte[] payload) {
+        assert payload.length == PAGE_SIZE;
+
         this.fileName = fileName;
         this.index = index;
         this.payload = payload;
@@ -38,7 +40,9 @@ public class BufferPage {
 
     public void readFromFile(RandomAccessFile file) throws IOException {
         file.seek(this.index * PAGE_SIZE);
-        file.read(this.payload);
+        if (file.read(this.payload) < 0) {
+            throw new IndexOutOfBoundsException("End of file");
+        }
         this.dirty = false;
     }
 
