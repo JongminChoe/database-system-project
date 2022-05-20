@@ -32,7 +32,7 @@ public class BufferManager {
 
         if (buffer.size() >= BUFFER_CAPACITY) {
             // MRU
-            buffer.pop().flush();
+            this.flushPage(this.buffer.pop());
         }
 
         buffer.push(page);
@@ -57,13 +57,13 @@ public class BufferManager {
         if (indexInBuffer < 0) {
             return;
         }
-        this.buffer.remove(indexInBuffer).flush();
+        this.flushPage(this.buffer.remove(indexInBuffer));
     }
 
     public void flush(String key) throws IOException {
         for (BufferPage page : this.buffer) {
             if (page.getFileName().equals(key)) {
-                page.flush();
+                this.flushPage(page);
             }
         }
         this.buffer.removeIf(page -> page.getFileName().equals(key));
@@ -71,9 +71,13 @@ public class BufferManager {
 
     public void flush() throws IOException {
         for (BufferPage page : this.buffer) {
-            page.flush();
+            this.flushPage(page);
         }
         this.buffer.clear();
+    }
+
+    private void flushPage(BufferPage page) throws IOException {
+        FilePool.getInstance().write(page.getFileName(), page.getOffset(), page.getPayload());
     }
 
     public void forceFlush() {

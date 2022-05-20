@@ -46,23 +46,6 @@ public class BufferPage {
         this.dirty = false;
     }
 
-    public void flush() throws IOException {
-        if (!this.isDirty()) {
-            return;
-        }
-
-        this.writeLock();
-
-        RandomAccessFile file = new RandomAccessFile(fileName, "rwd");
-        file.seek(index * PAGE_SIZE);
-        file.write(this.payload);
-        file.close();
-
-        this.writeUnlock();
-
-        this.dirty = false;
-    }
-
     public void readLock() {
         this.lock.readLock().lock();
     }
