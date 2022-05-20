@@ -1,7 +1,5 @@
 package MyDBMS;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -14,36 +12,22 @@ public class BufferPage {
     private final ReadWriteLock lock;
     private boolean dirty;
 
-    public BufferPage(String fileName, long index) throws IOException {
+    public BufferPage(String fileName, long index) {
         this(fileName, index, new byte[PAGE_SIZE]);
-
-        RandomAccessFile file = new RandomAccessFile(fileName, "r");
-        this.readFromFile(file);
-        file.close();
-    }
-
-    public BufferPage(String fileName, long index, RandomAccessFile file) throws IOException {
-        this(fileName, index, new byte[PAGE_SIZE]);
-
-        this.readFromFile(file);
     }
 
     public BufferPage(String fileName, long index, byte[] payload) {
+        this(fileName, index, payload, false);
+    }
+
+    public BufferPage(String fileName, long index, byte[] payload, boolean dirty) {
         assert payload.length == PAGE_SIZE;
 
         this.fileName = fileName;
         this.index = index;
         this.payload = payload;
         this.lock = new ReentrantReadWriteLock();
-        this.dirty = true;
-    }
-
-    public void readFromFile(RandomAccessFile file) throws IOException {
-        file.seek(this.index * PAGE_SIZE);
-        if (file.read(this.payload) < 0) {
-            throw new IOException("End of file");
-        }
-        this.dirty = false;
+        this.dirty = dirty;
     }
 
     public void readLock() {
