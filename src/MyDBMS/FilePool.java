@@ -27,7 +27,9 @@ public class FilePool {
         byte[] payload = new byte[length];
         RandomAccessFile file = this.getFile(fileName);
         file.seek(offset);
-        file.read(payload);
+        if (file.read(payload) != length) {
+            throw new IOException("End of file");
+        }
         return payload;
     }
 

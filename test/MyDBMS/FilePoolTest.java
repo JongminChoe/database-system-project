@@ -39,12 +39,18 @@ class FilePoolTest {
 
     @Test
     @Order(5)
+    void testReadOutOfFileSize() {
+        assertDoesNotThrow(() -> assertNull(FilePool.getInstance().read("test_file", 12, 4)));
+    }
+
+    @Test
+    @Order(6)
     void testSize() {
         assertEquals(1, FilePool.getInstance().size());
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     void testDelete() {
         File file = new File("test_file");
         assertTrue(file.exists());
