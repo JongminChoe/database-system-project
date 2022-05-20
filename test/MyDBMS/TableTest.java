@@ -33,8 +33,6 @@ class TableTest {
     @Test
     void testGetAllRecordsFromEmptyBufferPage() {
         Table table = new Table("test_table", new Column[0]);
-        BufferPage bufferPage = new BufferPage(table.getTableName(), 0, new SlottedPage(table).toByteArray());
-        assertDoesNotThrow(bufferPage::flush, "Cannot proceed test due to I/O Exception");
 
         assertEquals(0, table.getAllRecords().count());
     }
@@ -51,8 +49,7 @@ class TableTest {
 
         page.addRecord(record);
 
-        BufferPage bufferPage = new BufferPage(table.getTableName(), 0, page.toByteArray());
-        assertDoesNotThrow(bufferPage::flush, "Cannot proceed test due to I/O Exception");
+        assertDoesNotThrow(() -> BufferManager.getInstance().getEmptyPage(table.getTableName(), 0).setPayload(page.toByteArray()));
 
         Record[] records = table.getAllRecords().toArray(Record[]::new);
         assertEquals(1, records.length);
