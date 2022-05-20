@@ -26,7 +26,7 @@ public class Table {
                 .iterate(0, n -> n + 1)
                 .map(i -> {
                     try {
-                        return BufferManager.getInstance().get(this.getTableName(), i);
+                        return BufferManager.getInstance().getPage(this.getTableName(), i);
                     } catch (IOException e) {
                         return null;
                     }

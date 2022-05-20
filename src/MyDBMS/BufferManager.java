@@ -21,19 +21,41 @@ public class BufferManager {
         private static final BufferManager INSTANCE = new BufferManager();
     }
 
-    public BufferPage get(String key, long index) throws IOException {
+    public BufferPage getPage(String key, long index) throws IOException {
         int indexInBuffer = this.search(key, index);
         if (indexInBuffer >= 0) {
             return this.buffer.get(indexInBuffer);
         }
 
         // page not found in buffer
-        BufferPage page = new BufferPage(key, index);
 
         if (buffer.size() >= BUFFER_CAPACITY) {
             // MRU
             this.flushPage(this.buffer.pop());
         }
+
+        byte[] payload = FilePool.getInstance().read(key, index * BufferPage.PAGE_SIZE, BufferPage.PAGE_SIZE);
+        BufferPage page = new BufferPage(key, index, payload);
+
+        buffer.push(page);
+
+        return page;
+    }
+
+    public BufferPage getEmptyPage(String key, long index) throws IOException {
+        int indexInBuffer = this.search(key, index);
+        if (indexInBuffer >= 0) {
+            return this.buffer.get(indexInBuffer);
+        }
+
+        // page not found in buffer
+
+        if (buffer.size() >= BUFFER_CAPACITY) {
+            // MRU
+            this.flushPage(this.buffer.pop());
+        }
+
+        BufferPage page = new BufferPage(key, index);
 
         buffer.push(page);
 
