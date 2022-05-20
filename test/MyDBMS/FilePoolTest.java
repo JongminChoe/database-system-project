@@ -6,41 +6,43 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class FilePoolTest {
+    private static final String TABLE_NAME = "test_table";
 
     @Test
     @Order(1)
     void testWrite() {
-        assertDoesNotThrow(() -> FilePool.getInstance().write("test_file", 0, new byte[]{ 0, 1, 2, 3 }));
+        assertDoesNotThrow(() -> FilePool.getInstance().write(TABLE_NAME, 0, new byte[]{ 0, 1, 2, 3 }));
     }
 
     @Test
     @Order(2)
     void testWriteOffset() {
-        assertDoesNotThrow(() -> FilePool.getInstance().write("test_file", 8, new byte[]{ 4, 5, 6, 7 }));
+        assertDoesNotThrow(() -> FilePool.getInstance().write(TABLE_NAME, 8, new byte[]{ 4, 5, 6, 7 }));
     }
 
     @Test
     @Order(3)
     void testRead() {
-        assertDoesNotThrow(() -> assertArrayEquals(new byte[]{ 0, 1, 2, 3 }, FilePool.getInstance().read("test_file", 0, 4)));
+        assertDoesNotThrow(() -> assertArrayEquals(new byte[]{ 0, 1, 2, 3 }, FilePool.getInstance().read(TABLE_NAME, 0, 4)));
     }
 
     @Test
     @Order(4)
     void testReadOffset() {
-        assertDoesNotThrow(() -> assertArrayEquals(new byte[]{ 0, 0, 0, 0 }, FilePool.getInstance().read("test_file", 4, 4)));
-        assertDoesNotThrow(() -> assertArrayEquals(new byte[]{ 4, 5, 6, 7 }, FilePool.getInstance().read("test_file", 8, 4)));
+        assertDoesNotThrow(() -> assertArrayEquals(new byte[]{ 0, 0, 0, 0 }, FilePool.getInstance().read(TABLE_NAME, 4, 4)));
+        assertDoesNotThrow(() -> assertArrayEquals(new byte[]{ 4, 5, 6, 7 }, FilePool.getInstance().read(TABLE_NAME, 8, 4)));
     }
 
     @Test
     @Order(5)
     void testReadOutOfFileSize() {
-        assertDoesNotThrow(() -> assertNull(FilePool.getInstance().read("test_file", 12, 4)));
+        assertThrows(IOException.class, () -> assertNull(FilePool.getInstance().read(TABLE_NAME, 12, 4)));
     }
 
     @Test
@@ -52,10 +54,10 @@ class FilePoolTest {
     @Test
     @Order(7)
     void testDelete() {
-        File file = new File("test_file");
+        File file = new File("test_table");
         assertTrue(file.exists());
 
-        assertDoesNotThrow(() -> FilePool.getInstance().delete("test_file"));
+        assertDoesNotThrow(() -> FilePool.getInstance().delete(TABLE_NAME));
 
         assertFalse(file.exists());
     }
