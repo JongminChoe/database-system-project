@@ -58,6 +58,10 @@ public class BufferPage {
         return this.index;
     }
 
+    public long getOffset() {
+        return this.getIndex() * PAGE_SIZE;
+    }
+
     public byte[] getPayload() {
         return this.payload;
     }

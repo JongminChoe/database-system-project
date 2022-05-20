@@ -62,7 +62,7 @@ public class BufferManager {
         return page;
     }
 
-    public int search(String key, long index) {
+    private int search(String key, long index) {
         ListIterator<BufferPage> iterator = this.buffer.listIterator();
         while (iterator.hasNext()) {
             int indexInBuffer = iterator.nextIndex();
@@ -72,6 +72,14 @@ public class BufferManager {
             }
         }
         return -1;
+    }
+
+    public boolean contains(String key, long index) {
+        return this.search(key, index) != -1;
+    }
+
+    public int getSize() {
+        return this.buffer.size();
     }
 
     public void flush(String key, long index) throws IOException {
