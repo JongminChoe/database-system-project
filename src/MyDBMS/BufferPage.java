@@ -61,4 +61,9 @@ public class BufferPage {
     public byte[] getPayload() {
         return this.payload;
     }
+
+    public void setPayload(byte[] payload) {
+        System.arraycopy(payload, 0, this.payload, 0, Math.min(payload.length, this.payload.length));
+        this.dirty = true;
+    }
 }
