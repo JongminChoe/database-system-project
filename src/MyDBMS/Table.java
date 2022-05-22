@@ -136,6 +136,73 @@ public class Table {
         return this.getAllRecords().filter(record -> Objects.equals(record.getVarchar(column), value)).toArray(Record[]::new);
     }
 
+    public boolean destroy(Object primaryKey) {
+        if (this.getPrimaryColumn() == null) {
+            return false;
+        }
+
+        return switch (this.columns.get(this.getPrimaryColumn()).getType()) {
+            case CHAR -> this.deleteWhereChar(this.getPrimaryColumn(), (String) primaryKey);
+            case VARCHAR -> this.deleteWhereVarchar(this.getPrimaryColumn(), (String) primaryKey);
+        };
+    }
+
+    public boolean deleteWhereChar(String column, String value) {
+        if (!this.columns.containsKey(column)) {
+            throw new IllegalArgumentException("Column [" + column + "] does not exists");
+        }
+        if (this.columns.get(column).getType() != Column.DataType.CHAR) {
+            throw new IllegalArgumentException("Column [" + column + "] is not CHAR type");
+        }
+
+        for (int i = 0; ; i++) {
+            BufferPage bufferPage;
+            try {
+                bufferPage = BufferManager.getInstance().getPage(this.getTableName(), i);
+            } catch (IOException e) {
+                // end of file
+                break;
+            }
+            SlottedPage slottedPage = new SlottedPage(this, bufferPage.getPayload());
+            for (Record record : slottedPage.getRecords()) {
+                if (Objects.equals(record.getChar(column), value)) {
+                    slottedPage.removeRecord(record);
+                    bufferPage.setPayload(slottedPage.toByteArray());
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean deleteWhereVarchar(String column, String value) {
+        if (!this.columns.containsKey(column)) {
+            throw new IllegalArgumentException("Column [" + column + "] does not exists");
+        }
+        if (this.columns.get(column).getType() != Column.DataType.VARCHAR) {
+            throw new IllegalArgumentException("Column [" + column + "] is not VARCHAR type");
+        }
+
+        for (int i = 0; ; i++) {
+            BufferPage bufferPage;
+            try {
+                bufferPage = BufferManager.getInstance().getPage(this.getTableName(), i);
+            } catch (IOException e) {
+                // end of file
+                break;
+            }
+            SlottedPage slottedPage = new SlottedPage(this, bufferPage.getPayload());
+            for (Record record : slottedPage.getRecords()) {
+                if (Objects.equals(record.getVarchar(column), value)) {
+                    slottedPage.removeRecord(record);
+                    bufferPage.setPayload(slottedPage.toByteArray());
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void flush() throws IOException {
         BufferManager.getInstance().flush(this.getTableName());
     }

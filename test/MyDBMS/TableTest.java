@@ -209,4 +209,69 @@ class TableTest {
         assertEquals(record2, table.find("key2"));
         assertNull(table.find("key3"));
     }
+
+    @Test
+    void testDeleteOnEmptyTable() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "char_column", 16),
+                new Column(Column.DataType.VARCHAR, "varchar_column", 16)
+        });
+
+        assertFalse(table.deleteWhereChar("char_column", "char1           "));
+    }
+
+    @Test
+    void testDeleteWhereChar() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "char_column", 16),
+                new Column(Column.DataType.VARCHAR, "varchar_column", 16)
+        });
+        Record record1 = new Record(table).setChar("char_column", "char1").setVarchar("varchar_column", "varchar1");
+        Record record2 = new Record(table).setChar("char_column", "char2").setVarchar("varchar_column", "varchar2");
+
+        table.addRecord(record1);
+        table.addRecord(record2);
+
+        assertTrue(table.deleteWhereChar("char_column", "char1           "));
+        assertFalse(table.deleteWhereChar("char_column", "char1           "));
+
+        assertEquals(0, table.whereChar("char_column", "char1           ").length);
+        assertArrayEquals(new Record[]{record2}, table.whereChar("char_column", "char2           "));
+    }
+
+    @Test
+    void testDeleteWhereVarchar() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "char_column", 16),
+                new Column(Column.DataType.VARCHAR, "varchar_column", 16)
+        });
+        Record record1 = new Record(table).setChar("char_column", "char1").setVarchar("varchar_column", "varchar1");
+        Record record2 = new Record(table).setChar("char_column", "char2").setVarchar("varchar_column", "varchar2");
+
+        table.addRecord(record1);
+        table.addRecord(record2);
+
+        assertTrue(table.deleteWhereVarchar("varchar_column", "varchar1"));
+        assertFalse(table.deleteWhereVarchar("varchar_column", "varchar1"));
+
+        assertEquals(0, table.whereVarchar("varchar_column", "varchar1").length);
+        assertArrayEquals(new Record[]{record2}, table.whereVarchar("varchar_column", "varchar2"));
+    }
+
+    @Test
+    void testDestroy() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.VARCHAR, "primary_key", 16)
+        }, "primary_key");
+        Record record1 = new Record(table).setVarchar("primary_key", "key1");
+        Record record2 = new Record(table).setVarchar("primary_key", "key2");
+
+        table.addRecord(record1);
+        table.addRecord(record2);
+
+        assertTrue(table.destroy("key1"));
+        assertFalse(table.destroy("key1"));
+        assertNull(table.find("key1"));
+        assertEquals(record2, table.find("key2"));
+    }
 }
