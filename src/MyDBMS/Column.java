@@ -1,5 +1,7 @@
 package MyDBMS;
 
+import java.util.Objects;
+
 public class Column {
 
     public enum DataType {
@@ -42,5 +44,17 @@ public class Column {
 
     public int getSize() {
         return this.size;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Column column)) return false;
+        return getSize() == column.getSize() && getType() == column.getType() && getName().equals(column.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getType(), getName(), getSize());
     }
 }
