@@ -148,6 +148,21 @@ class TableTest {
     }
 
     @Test
+    void testWhereCharNull() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "char_column", 16),
+                new Column(Column.DataType.VARCHAR, "varchar_column", 16)
+        });
+        Record record1 = new Record(table).setChar("char_column", "char1").setVarchar("varchar_column", "varchar1");
+        Record record2 = new Record(table).setChar("char_column", null).setVarchar("varchar_column", null);
+
+        table.addRecord(record1);
+        table.addRecord(record2);
+
+        assertArrayEquals(new Record[]{record2}, table.whereChar("char_column", null));
+    }
+
+    @Test
     void testWhereVarchar() {
         Table table = new Table("test_table", new Column[]{
                 new Column(Column.DataType.CHAR, "char_column", 16),
@@ -162,6 +177,21 @@ class TableTest {
         assertArrayEquals(new Record[]{record1}, table.whereVarchar("varchar_column", "varchar1"));
         assertArrayEquals(new Record[]{record2}, table.whereVarchar("varchar_column", "varchar2"));
         assertArrayEquals(new Record[]{}, table.whereVarchar("varchar_column", "varchar3"));
+    }
+
+    @Test
+    void testWhereVarcharNull() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "char_column", 16),
+                new Column(Column.DataType.VARCHAR, "varchar_column", 16)
+        });
+        Record record1 = new Record(table).setChar("char_column", "char1").setVarchar("varchar_column", "varchar1");
+        Record record2 = new Record(table).setChar("char_column", null).setVarchar("varchar_column", null);
+
+        table.addRecord(record1);
+        table.addRecord(record2);
+
+        assertArrayEquals(new Record[]{record2}, table.whereVarchar("varchar_column", null));
     }
 
     @Test

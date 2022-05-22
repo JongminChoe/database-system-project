@@ -122,7 +122,7 @@ public class Table {
             throw new IllegalArgumentException("Column [" + column + "] is not CHAR type");
         }
 
-        return this.getAllRecords().filter(record -> record.getChar(column).equals(value)).toArray(Record[]::new);
+        return this.getAllRecords().filter(record -> Objects.equals(record.getChar(column), value)).toArray(Record[]::new);
     }
 
     public Record[] whereVarchar(String column, String value) {
@@ -133,7 +133,7 @@ public class Table {
             throw new IllegalArgumentException("Column [" + column + "] is not CHAR type");
         }
 
-        return this.getAllRecords().filter(record -> record.getVarchar(column).equals(value)).toArray(Record[]::new);
+        return this.getAllRecords().filter(record -> Objects.equals(record.getVarchar(column), value)).toArray(Record[]::new);
     }
 
     public void flush() throws IOException {
