@@ -207,6 +207,10 @@ public class Table {
         BufferManager.getInstance().flush(this.getTableName());
     }
 
+    public void forceFlush() {
+        BufferManager.getInstance().forceFlush(this.getTableName());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

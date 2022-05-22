@@ -96,18 +96,22 @@ public class BufferManager {
                 this.flushPage(page);
             }
         }
-        this.buffer.removeIf(page -> page.getFileName().equals(key));
+        this.forceFlush(key);
     }
 
     public void flush() throws IOException {
         for (BufferPage page : this.buffer) {
             this.flushPage(page);
         }
-        this.buffer.clear();
+        this.forceFlush();
     }
 
     private void flushPage(BufferPage page) throws IOException {
         FilePool.getInstance().write(page.getFileName(), page.getOffset(), page.getPayload());
+    }
+
+    public void forceFlush(String key) {
+        this.buffer.removeIf(page -> page.getFileName().equals(key));
     }
 
     public void forceFlush() {
