@@ -31,6 +31,33 @@ class TableTest {
     }
 
     @Test
+    void testGetColumns() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "test", 16)
+        });
+
+        assertArrayEquals(new Column[]{
+                new Column(Column.DataType.CHAR, "test", 16)
+        }, table.getColumns());
+    }
+
+    @Test
+    void testGetPrimaryColumn() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "primary_key", 16)
+        }, "primary_key");
+
+        assertEquals("primary_key", table.getPrimaryColumn());
+    }
+
+    @Test
+    void testInvalidPrimaryColumn() {
+        assertThrows(IllegalArgumentException.class, () -> new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "primary_key", 16)
+        }, "another_key"));
+    }
+
+    @Test
     void testGetAllRecordsFromEmptyBufferPage() {
         Table table = new Table("test_table", new Column[0]);
 
