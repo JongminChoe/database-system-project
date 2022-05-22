@@ -128,6 +128,10 @@ public class Table {
         return this.getAllRecords().filter(record -> record.getVarchar(column).equals(value)).toArray(Record[]::new);
     }
 
+    public void flush() throws IOException {
+        BufferManager.getInstance().flush(this.getTableName());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
