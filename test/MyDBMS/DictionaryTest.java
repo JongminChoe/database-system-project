@@ -26,6 +26,6 @@ class DictionaryTest {
         assertEquals(new Table("test_table", new Column[]{
                 new Column(Column.DataType.CHAR, "primary_key", 16)
         }, "primary_key"), Dictionary.getInstance().getTable("test_table"));
-        assertEquals(1, Dictionary.getInstance().getTable(Dictionary.TABLE_DICTIONARY).whereVarchar("name", "test_table").length);
+        assertNotNull(Dictionary.getInstance().getTable(Dictionary.TABLE_DICTIONARY).find("test_table"));
     }
 }

@@ -53,7 +53,7 @@ public class Dictionary {
                 new Column(Column.DataType.VARCHAR, "name", 255),
                 new Column(Column.DataType.VARCHAR, "primary_key", 255),
                 new Column(Column.DataType.CHAR, "nattrs", 2)
-        });
+        }, "name");
         this.tables.put(table.getTableName(), table);
         return table;
     }
