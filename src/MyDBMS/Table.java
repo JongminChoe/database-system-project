@@ -3,6 +3,7 @@ package MyDBMS;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -143,11 +144,13 @@ public class Table {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Table table)) return false;
-        return Objects.equals(this.getTableName(), table.getTableName());
+        return this.getTableName().equals(table.getTableName())
+                && new HashSet<>(Arrays.asList(this.getColumns())).equals(new HashSet<>(Arrays.asList(table.getColumns())))
+                && Objects.equals(this.getPrimaryColumn(), table.getPrimaryColumn());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getTableName());
+        return Objects.hash(this.getTableName(), new HashSet<>(Arrays.asList(this.getColumns())), this.getPrimaryColumn());
     }
 }

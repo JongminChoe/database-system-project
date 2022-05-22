@@ -66,6 +66,20 @@ class TableTest {
     }
 
     @Test
+    void testDifferentColumnOrder() {
+        assertEquals(
+                new Table("test_table", new Column[]{
+                        new Column(Column.DataType.CHAR, "char_column", 16),
+                        new Column(Column.DataType.VARCHAR, "varchar_column", 255)
+                }),
+                new Table("test_table", new Column[]{
+                        new Column(Column.DataType.VARCHAR, "varchar_column", 255),
+                        new Column(Column.DataType.CHAR, "char_column", 16)
+                })
+        );
+    }
+
+    @Test
     void testEmptyTable() {
         Table table = new Table("test_table", new Column[0]);
 
