@@ -130,6 +130,12 @@ public class Dictionary {
         return this.tables.get(tableName);
     }
 
+    public void deleteTable(String tableName) {
+        this.tables.remove(tableName).forceFlush();
+        this.getTable(TABLE_DICTIONARY).destroy(tableName);
+        this.getTable(ATTRIBUTE_DICTIONARY).deleteWhereVarchar("table", tableName);
+    }
+
     public void flush() throws IOException {
         this.getTable(ATTRIBUTE_DICTIONARY).flush();
         this.getTable(TABLE_DICTIONARY).flush();
