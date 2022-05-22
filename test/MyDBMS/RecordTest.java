@@ -88,6 +88,19 @@ class RecordTest {
     }
 
     @Test
+    void testSingleNullCharColumnRecordToBytes() {
+        Record record = new Record(new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "test", 16)
+        }));
+        record.setChar("test", null);
+
+        byte[] expected = new byte[17];
+        expected[16] = (byte) 0x80;
+
+        assertArrayEquals(expected, record.toByteArray());
+    }
+
+    @Test
     void testSingleVarcharColumnRecordToBytes() {
         Record record = new Record(new Table("test_table", new Column[]{
                 new Column(Column.DataType.VARCHAR, "test", 16)
@@ -119,13 +132,13 @@ class RecordTest {
 
         assertEquals("hello world     ", record.getChar("test"));
     }
-    
+
     @Test
     void testSingleVarcharColumnRecordFromBytes() {
         byte[] payload = "\0\0\0\0\0hello world".getBytes();
         payload[1] = 5;
         payload[3] = (byte) "hello world".length();
-        
+
         Record record = new Record(new Table("test_table", new Column[]{
                 new Column(Column.DataType.VARCHAR, "test", 16)
         }), payload);

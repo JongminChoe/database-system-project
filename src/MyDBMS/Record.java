@@ -87,10 +87,7 @@ public class Record {
                 position += length;
             }
             else {
-                if (data == null) {
-                    data = new byte[columnBlueprint.getSize()];
-                }
-                stream.put(data);
+                stream.put(data == null ? new byte[columnBlueprint.getSize()] : data);
             }
 
             if (data == null) {
