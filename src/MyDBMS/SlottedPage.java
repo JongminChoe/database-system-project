@@ -58,6 +58,15 @@ public class SlottedPage {
         this.entries.add(record);
     }
 
+    public boolean removeRecord(Record record) {
+        int index = this.entries.indexOf(record);
+        if (index >= 0) {
+            this.entries.set(index, null);
+            return true;
+        }
+        return false;
+    }
+
     public int getNumberOfEntries() {
         return this.numberOfEntries;
     }

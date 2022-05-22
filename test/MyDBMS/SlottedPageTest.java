@@ -110,4 +110,30 @@ class SlottedPageTest {
         assertEquals(1, page.getNumberOfEntries());
         assertEquals(record, page.getRecords().get(0));
     }
+
+    @Test
+    void testRemoveNonExistentRecord() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "test", 16)
+        });
+        SlottedPage page = new SlottedPage(table);
+
+        assertFalse(page.removeRecord(new Record(table)));
+    }
+
+    @Test
+    void testRemoveRecord() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "test", 16)
+        });
+        SlottedPage page = new SlottedPage(table);
+
+        Record record = new Record(table).setChar("test", "hello world");
+
+        page.addRecord(record);
+
+        assertTrue(page.removeRecord(record));
+        assertTrue(page.getRecords().isEmpty());
+        assertEquals(BufferPage.PAGE_SIZE - 2 - 4, page.getFreeSpaceSize());
+    }
 }
