@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class DictionaryTest {
 
     @Test
-    void testEmptyDictionary() {
-        assertNull(Dictionary.getInstance().getTable("test_table"));
+    void testNotExistentTable() {
+        assertNull(Dictionary.getInstance().getTable("non_existent_table"));
     }
 
     @Test
