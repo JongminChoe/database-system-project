@@ -1,10 +1,17 @@
 package MyDBMS;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class DictionaryTest {
+
+    @BeforeEach
+    void BeforeEach() {
+        BufferManager.getInstance().forceFlush();
+        Dictionary.getInstance().reload();
+    }
 
     @Test
     void testNotExistentTable() {
@@ -27,5 +34,11 @@ class DictionaryTest {
                 new Column(Column.DataType.CHAR, "primary_key", 16)
         }, "primary_key"), Dictionary.getInstance().getTable("test_table"));
         assertNotNull(Dictionary.getInstance().getTable(Dictionary.TABLE_DICTIONARY).find("test_table"));
+    }
+
+    @Test
+    void testCreateDuplicateTable() {
+        assertDoesNotThrow(() -> Dictionary.getInstance().createTable("test_table", new Column[0], null));
+        assertThrows(IllegalArgumentException.class, () -> Dictionary.getInstance().createTable("test_table", new Column[0], null));
     }
 }
