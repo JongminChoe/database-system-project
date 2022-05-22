@@ -58,6 +58,14 @@ class TableTest {
     }
 
     @Test
+    void testDuplicateColumnName() {
+        assertThrows(IllegalStateException.class, () -> new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "primary_key", 16),
+                new Column(Column.DataType.VARCHAR, "primary_key", 255)
+        }));
+    }
+
+    @Test
     void testEmptyTable() {
         Table table = new Table("test_table", new Column[0]);
 

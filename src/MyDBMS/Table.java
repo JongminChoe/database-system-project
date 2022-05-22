@@ -22,7 +22,14 @@ public class Table {
         this.columns = Arrays.stream(columns).collect(Collectors.toMap(
                 Column::getName,
                 Function.identity(),
-                (prev, next) -> next,
+                (prev, next) -> {
+                    if (prev.getName().equals(next.getName())) {
+                        throw new IllegalStateException(String.format(
+                                "Duplicate key %s (attempted merging values %s and %s)",
+                                prev.getName(), prev, next));
+                    }
+                    return next;
+                },
                 HashMap::new
         ));
         if (primaryColumn != null && !this.columns.containsKey(primaryColumn)) {
