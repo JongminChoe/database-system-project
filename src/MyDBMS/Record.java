@@ -157,6 +157,9 @@ public class Record {
         if (columnBlueprint.getType() != Column.DataType.CHAR) {
             throw new IllegalArgumentException("Column [" + columnName + "] is not CHAR type");
         }
+        if (value == null && columnBlueprint.isNotnull()) {
+            throw new IllegalArgumentException("Column [" + columnName + "] cannot be null");
+        }
 
         byte[] data = null;
         if (value != null) {
@@ -177,6 +180,9 @@ public class Record {
         }
         if (columnBlueprint.getType() != Column.DataType.VARCHAR) {
             throw new IllegalArgumentException("Column [" + columnName + "] is not VARCHAR type");
+        }
+        if (value == null && columnBlueprint.isNotnull()) {
+            throw new IllegalArgumentException("Column [" + columnName + "] cannot be null");
         }
 
         this.columnData.put(columnBlueprint.getName(), value == null ? null : value.getBytes());

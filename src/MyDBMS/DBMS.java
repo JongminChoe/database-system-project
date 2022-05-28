@@ -68,7 +68,8 @@ public class DBMS implements Closeable {
             this.columns.add(new Column(
                     Arrays.stream(Column.DataType.values()).filter(dataType -> dataType.getValue().equalsIgnoreCase(type)).findAny().orElseThrow(),
                     name,
-                    size
+                    size,
+                    notnull
             ));
             return this;
         }

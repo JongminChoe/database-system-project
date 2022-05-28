@@ -27,11 +27,17 @@ public class Column {
     private final DataType type;
     private final String name;
     private final int size;
+    private final boolean notnull;
 
     public Column(DataType type, String name, int size) {
+        this(type, name, size, false);
+    }
+
+    public Column(DataType type, String name, int size, boolean notnull) {
         this.type = type;
         this.name = name;
         this.size = size;
+        this.notnull = notnull;
     }
 
     public DataType getType() {
@@ -46,15 +52,19 @@ public class Column {
         return this.size;
     }
 
+    public boolean isNotnull() {
+        return this.notnull;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Column column)) return false;
-        return getSize() == column.getSize() && getType() == column.getType() && getName().equals(column.getName());
+        return getSize() == column.getSize() && isNotnull() == column.isNotnull() && getType() == column.getType() && getName().equals(column.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getType(), getName(), getSize());
+        return Objects.hash(getType(), getName(), getSize(), isNotnull());
     }
 }

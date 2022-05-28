@@ -29,12 +29,12 @@ public class Dictionary {
 
     private Table addDefaultAttributeTable() {
         Table table = new Table(ATTRIBUTE_DICTIONARY, new Column[]{
-                new Column(Column.DataType.VARCHAR, "table", 255),
-                new Column(Column.DataType.VARCHAR, "name", 255),
-                new Column(Column.DataType.CHAR, "type", 1),
-                new Column(Column.DataType.CHAR, "size", 2),
-                new Column(Column.DataType.CHAR, "notnull", 1),
-                new Column(Column.DataType.CHAR, "position", 2)
+                new Column(Column.DataType.VARCHAR, "table", 255, true),
+                new Column(Column.DataType.VARCHAR, "name", 255, true),
+                new Column(Column.DataType.CHAR, "type", 1, true),
+                new Column(Column.DataType.CHAR, "size", 2, true),
+                new Column(Column.DataType.CHAR, "notnull", 1, true),
+                new Column(Column.DataType.CHAR, "position", 2, true)
         });
         this.tables.put(table.getTableName(), table);
         return table;
@@ -42,9 +42,9 @@ public class Dictionary {
 
     private Table addDefaultTableTable() {
         Table table = new Table(TABLE_DICTIONARY, new Column[]{
-                new Column(Column.DataType.VARCHAR, "name", 255),
+                new Column(Column.DataType.VARCHAR, "name", 255, true),
                 new Column(Column.DataType.VARCHAR, "primary_key", 255),
-                new Column(Column.DataType.CHAR, "nattrs", 2)
+                new Column(Column.DataType.CHAR, "nattrs", 2, true)
         }, "name");
         this.tables.put(table.getTableName(), table);
         return table;
@@ -60,7 +60,8 @@ public class Dictionary {
                                 record -> new Column(
                                         Column.DataType.values()[record.getChar("type").getBytes()[0]],
                                         record.getVarchar("name"),
-                                        ByteBuffer.wrap(record.getChar("size").getBytes()).getShort()
+                                        ByteBuffer.wrap(record.getChar("size").getBytes()).getShort(),
+                                        record.getChar("notnull").getBytes()[0] == 1
                                 ),
                                 Collectors.toCollection(ArrayList::new)
                         )
@@ -100,7 +101,7 @@ public class Dictionary {
                             .setVarchar("name", column.getName())
                             .setChar("type", new String(new byte[]{(byte) column.getType().ordinal()}))
                             .setChar("size", new String(ByteBuffer.allocate(2).putShort((short) column.getSize()).array()))
-                            .setChar("notnull", new String(new byte[]{0}))
+                            .setChar("notnull", new String(new byte[]{(byte) (column.isNotnull() ? 1 : 0)}))
                             .setChar("position", new String(ByteBuffer.allocate(2).putShort((short) index).array()))
             );
         }
