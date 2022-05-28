@@ -98,7 +98,11 @@ public class DBMS implements Closeable {
         }
 
         public boolean persist() {
-            return DBMS.this.getDictionary().createTable(this.tableName, this.columns.toArray(Column[]::new), this.primaryColumn) != null;
+            try {
+                return DBMS.this.getDictionary().createTable(this.tableName, this.columns.toArray(Column[]::new), this.primaryColumn) != null;
+            } catch (Exception e) {
+                return false;
+            }
         }
     }
 
