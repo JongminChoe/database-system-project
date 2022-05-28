@@ -52,6 +52,6 @@ class DictionaryTest {
 
         assertNull(Dictionary.getInstance().getTable("test_table"));
         assertNull(Dictionary.getInstance().getTable(Dictionary.TABLE_DICTIONARY).find("test_table"));
-        assertEquals(0, Dictionary.getInstance().getTable(Dictionary.ATTRIBUTE_DICTIONARY).whereVarchar("table", "test_table").length);
+        assertEquals(0, Dictionary.getInstance().getTable(Dictionary.ATTRIBUTE_DICTIONARY).where("table", "test_table").length);
     }
 }

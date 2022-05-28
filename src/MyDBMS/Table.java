@@ -106,34 +106,20 @@ public class Table {
             return null;
         }
 
-        Record[] records = switch (this.columns.get(this.getPrimaryColumn()).getType()) {
-            case CHAR -> this.whereChar(this.getPrimaryColumn(), (String) value);
-            case VARCHAR -> this.whereVarchar(this.getPrimaryColumn(), (String) value);
-        };
+        Record[] records = this.where(this.getPrimaryColumn(), value);
 
         return records.length > 0 ? records[0] : null;
     }
 
-    public Record[] whereChar(String column, String value) {
+    public Record[] where(String column, Object value) {
         if (!this.columns.containsKey(column)) {
             throw new IllegalArgumentException("Column [" + column + "] does not exists");
         }
-        if (this.columns.get(column).getType() != Column.DataType.CHAR) {
-            throw new IllegalArgumentException("Column [" + column + "] is not CHAR type");
-        }
 
-        return this.getAllRecords().filter(record -> Objects.equals(record.getChar(column), value)).toArray(Record[]::new);
-    }
-
-    public Record[] whereVarchar(String column, String value) {
-        if (!this.columns.containsKey(column)) {
-            throw new IllegalArgumentException("Column [" + column + "] does not exists");
-        }
-        if (this.columns.get(column).getType() != Column.DataType.VARCHAR) {
-            throw new IllegalArgumentException("Column [" + column + "] is not CHAR type");
-        }
-
-        return this.getAllRecords().filter(record -> Objects.equals(record.getVarchar(column), value)).toArray(Record[]::new);
+        return switch (this.columns.get(column).getType()) {
+            case CHAR -> this.getAllRecords().filter(record -> Objects.equals(record.getChar(column), value)).toArray(Record[]::new);
+            case VARCHAR -> this.getAllRecords().filter(record -> Objects.equals(record.getVarchar(column), value)).toArray(Record[]::new);
+        };
     }
 
     public boolean destroy(Object primaryKey) {

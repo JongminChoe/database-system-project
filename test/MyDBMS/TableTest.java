@@ -142,9 +142,9 @@ class TableTest {
         table.addRecord(record1);
         table.addRecord(record2);
 
-        assertArrayEquals(new Record[]{record1}, table.whereChar("char_column", "char1           "));
-        assertArrayEquals(new Record[]{record2}, table.whereChar("char_column", "char2           "));
-        assertArrayEquals(new Record[]{}, table.whereChar("char_column", "char3           "));
+        assertArrayEquals(new Record[]{record1}, table.where("char_column", "char1           "));
+        assertArrayEquals(new Record[]{record2}, table.where("char_column", "char2           "));
+        assertArrayEquals(new Record[]{}, table.where("char_column", "char3           "));
     }
 
     @Test
@@ -159,7 +159,7 @@ class TableTest {
         table.addRecord(record1);
         table.addRecord(record2);
 
-        assertArrayEquals(new Record[]{record2}, table.whereChar("char_column", null));
+        assertArrayEquals(new Record[]{record2}, table.where("char_column", null));
     }
 
     @Test
@@ -174,9 +174,9 @@ class TableTest {
         table.addRecord(record1);
         table.addRecord(record2);
 
-        assertArrayEquals(new Record[]{record1}, table.whereVarchar("varchar_column", "varchar1"));
-        assertArrayEquals(new Record[]{record2}, table.whereVarchar("varchar_column", "varchar2"));
-        assertArrayEquals(new Record[]{}, table.whereVarchar("varchar_column", "varchar3"));
+        assertArrayEquals(new Record[]{record1}, table.where("varchar_column", "varchar1"));
+        assertArrayEquals(new Record[]{record2}, table.where("varchar_column", "varchar2"));
+        assertArrayEquals(new Record[]{}, table.where("varchar_column", "varchar3"));
     }
 
     @Test
@@ -191,7 +191,7 @@ class TableTest {
         table.addRecord(record1);
         table.addRecord(record2);
 
-        assertArrayEquals(new Record[]{record2}, table.whereVarchar("varchar_column", null));
+        assertArrayEquals(new Record[]{record2}, table.where("varchar_column", null));
     }
 
     @Test
@@ -235,8 +235,8 @@ class TableTest {
         assertTrue(table.deleteWhereChar("char_column", "char1           "));
         assertFalse(table.deleteWhereChar("char_column", "char1           "));
 
-        assertEquals(0, table.whereChar("char_column", "char1           ").length);
-        assertArrayEquals(new Record[]{record2}, table.whereChar("char_column", "char2           "));
+        assertEquals(0, table.where("char_column", "char1           ").length);
+        assertArrayEquals(new Record[]{record2}, table.where("char_column", "char2           "));
     }
 
     @Test
@@ -254,8 +254,8 @@ class TableTest {
         assertTrue(table.deleteWhereVarchar("varchar_column", "varchar1"));
         assertFalse(table.deleteWhereVarchar("varchar_column", "varchar1"));
 
-        assertEquals(0, table.whereVarchar("varchar_column", "varchar1").length);
-        assertArrayEquals(new Record[]{record2}, table.whereVarchar("varchar_column", "varchar2"));
+        assertEquals(0, table.where("varchar_column", "varchar1").length);
+        assertArrayEquals(new Record[]{record2}, table.where("varchar_column", "varchar2"));
     }
 
     @Test
