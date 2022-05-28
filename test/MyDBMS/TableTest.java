@@ -4,7 +4,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,9 +14,13 @@ class TableTest {
 
     @BeforeAll
     static void BeforeAll() {
-        File file = new File("test_table");
-        if (file.exists()) {
-            file.delete();
+        Path path = Path.of("test_table");
+        if (Files.exists(path)) {
+            try {
+                Files.delete(path);
+            } catch (IOException e) {
+                // e.printStackTrace();
+            }
         }
     }
 
