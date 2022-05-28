@@ -1,10 +1,11 @@
 package MyDBMS;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.ListIterator;
 import java.util.Stack;
 
-public class BufferManager {
+public class BufferManager implements Closeable {
     public static final int BUFFER_CAPACITY = 100;
 
     public Stack<BufferPage> buffer;
@@ -116,5 +117,10 @@ public class BufferManager {
 
     public void forceFlush() {
         this.buffer.clear();
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.flush();
     }
 }

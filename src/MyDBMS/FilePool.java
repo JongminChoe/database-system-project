@@ -1,12 +1,13 @@
 package MyDBMS;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
 
-public class FilePool {
+public class FilePool implements Closeable {
     public static final int MAX_OPEN_FILE = 10;
 
     private final LinkedHashMap<String, RandomAccessFile> pool;
@@ -63,5 +64,13 @@ public class FilePool {
         }
         this.pool.put(fileName, file);
         return file;
+    }
+
+    @Override
+    public void close() throws IOException {
+        for (RandomAccessFile file : this.pool.values()) {
+            file.close();
+        }
+        this.pool.clear();
     }
 }
