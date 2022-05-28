@@ -346,4 +346,20 @@ class TableTest {
         assertNull(table.find("key1"));
         assertEquals(record2, table.find("key2"));
     }
+
+    @Test
+    void testTruncate() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.VARCHAR, "primary_key", 16)
+        }, "primary_key");
+        Record record1 = new Record(table).setVarchar("primary_key", "key1");
+        Record record2 = new Record(table).setVarchar("primary_key", "key2");
+
+        table.addRecord(record1);
+        table.addRecord(record2);
+
+        assertTrue(table.truncate());
+
+        assertEquals(0, table.getAllRecords().count());
+    }
 }

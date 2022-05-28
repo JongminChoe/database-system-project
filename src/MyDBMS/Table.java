@@ -175,6 +175,21 @@ public class Table {
         }
     }
 
+    public boolean truncate() {
+        for (int i = 0; ; i++) {
+            BufferPage bufferPage;
+            try {
+                bufferPage = BufferManager.getInstance().getPage(this.getTableName(), i);
+            } catch (IOException e) {
+                // end of file
+                return true;
+            }
+            SlottedPage slottedPage = new SlottedPage(this, bufferPage.getPayload());
+            slottedPage.removeAll();
+            bufferPage.setPayload(slottedPage.toByteArray());
+        }
+    }
+
     public void flush() throws IOException {
         BufferManager.getInstance().flush(this.getTableName());
     }
