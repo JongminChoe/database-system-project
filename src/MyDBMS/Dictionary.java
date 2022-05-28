@@ -58,7 +58,7 @@ public class Dictionary {
                         HashMap::new,
                         Collectors.mapping(
                                 record -> new Column(
-                                        Column.DataType.values()[record.getChar("size").getBytes()[0]],
+                                        Column.DataType.values()[record.getChar("type").getBytes()[0]],
                                         record.getVarchar("name"),
                                         ByteBuffer.wrap(record.getChar("size").getBytes()).getShort()
                                 ),
