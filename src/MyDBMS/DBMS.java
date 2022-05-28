@@ -9,16 +9,15 @@ import java.util.List;
 public class DBMS implements Closeable {
     private final FilePool filePool;
     private final BufferManager bufferManager;
-    private final Dictionary dictionary;
+    private Dictionary dictionary;
 
     private DBMS() {
-        this(new FilePool(), new BufferManager(), new Dictionary());
+        this(new FilePool(), new BufferManager());
     }
 
-    public DBMS(FilePool filePool, BufferManager bufferManager, Dictionary dictionary) {
+    public DBMS(FilePool filePool, BufferManager bufferManager) {
         this.filePool = filePool;
         this.bufferManager = bufferManager;
-        this.dictionary = dictionary;
     }
 
     public static DBMS getInstance() {
@@ -37,7 +36,12 @@ public class DBMS implements Closeable {
         return this.bufferManager;
     }
 
-    public Dictionary getDictionary() {
+    public synchronized Dictionary getDictionary() {
+        // Dictionary must not be loaded in the constructor
+        // due to cyclic reference of getBufferManager()
+        if (this.dictionary == null) {
+            this.dictionary = new Dictionary();
+        }
         return this.dictionary;
     }
 
