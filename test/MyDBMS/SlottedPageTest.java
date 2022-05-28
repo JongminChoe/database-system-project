@@ -136,4 +136,19 @@ class SlottedPageTest {
         assertTrue(page.getRecords().isEmpty());
         assertEquals(BufferPage.PAGE_SIZE - 2 - 4, page.getFreeSpaceSize());
     }
+
+    @Test
+    void testRemoveALl() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "test", 16)
+        });
+        SlottedPage page = new SlottedPage(table);
+
+        Record record = new Record(table).setChar("test", "hello world");
+
+        page.addRecord(record);
+        page.removeAll();
+
+        assertTrue(page.getRecords().isEmpty());
+    }
 }
