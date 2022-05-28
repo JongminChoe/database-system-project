@@ -138,7 +138,7 @@ class SlottedPageTest {
     }
 
     @Test
-    void testRemoveALl() {
+    void testRemoveAll() {
         Table table = new Table("test_table", new Column[]{
                 new Column(Column.DataType.CHAR, "test", 16)
         });
