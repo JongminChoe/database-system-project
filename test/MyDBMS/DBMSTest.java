@@ -50,12 +50,18 @@ class DBMSTest {
 
     @Test
     @Order(2)
+    void testCreateDuplicateTable() {
+        assertFalse(DBMS.getInstance().createTable("test_table").persist());
+    }
+
+    @Test
+    @Order(3)
     void testSelectOnEmptyTable() {
         assertEquals(0, DBMS.getInstance().queryTable("test_table").get().length);
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     void testInsertRecord() {
         assertTrue(DBMS.getInstance().queryTable("test_table").insert("key1", "varchar", "char"));
         Record[] records = DBMS.getInstance().queryTable("test_table").get();
@@ -73,7 +79,7 @@ class DBMSTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void testSelectWhereRecord() {
         Record[] records = DBMS.getInstance().queryTable("test_table").where("primary_key", "key1").get();
         assertEquals(1, records.length);
@@ -81,7 +87,7 @@ class DBMSTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void testSelectWhereNotRecord() {
         Record[] records = DBMS.getInstance().queryTable("test_table").whereNot("primary_key", "key1").get();
         assertEquals(1, records.length);
@@ -89,7 +95,7 @@ class DBMSTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void testSelectWhereNullRecord() {
         Record[] records = DBMS.getInstance().queryTable("test_table").whereNull("column1").get();
         assertEquals(1, records.length);
@@ -97,7 +103,7 @@ class DBMSTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void testSelectWhereNotNullRecord() {
         Record[] records = DBMS.getInstance().queryTable("test_table").whereNotNull("column1").get();
         assertEquals(1, records.length);
@@ -105,7 +111,7 @@ class DBMSTest {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     void testDeleteRecord() {
         assertTrue(DBMS.getInstance().queryTable("test_table").where("primary_key", "key1").delete());
         assertEquals(1, DBMS.getInstance().queryTable("test_table").get().length);
@@ -116,7 +122,7 @@ class DBMSTest {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     void testDeleteTable() {
         DBMS.getInstance().deleteTable("test_table");
 
