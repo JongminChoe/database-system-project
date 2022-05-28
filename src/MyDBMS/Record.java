@@ -185,7 +185,13 @@ public class Record {
             throw new IllegalArgumentException("Column [" + columnName + "] cannot be null");
         }
 
-        this.columnData.put(columnBlueprint.getName(), value == null ? null : value.getBytes());
+        byte[] data = null;
+        if (value != null) {
+            data = new byte[Math.min(value.getBytes().length, columnBlueprint.getSize())];
+            System.arraycopy(value.getBytes(), 0, data, 0, data.length);
+        }
+
+        this.columnData.put(columnBlueprint.getName(), data);
         return this;
     }
 

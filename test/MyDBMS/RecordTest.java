@@ -78,6 +78,26 @@ class RecordTest {
     }
 
     @Test
+    void testSetCharColumnOverSize() {
+        Record record = new Record(new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "test", 16)
+        }));
+        record.setChar("test", "01234567890123456789");
+
+        assertEquals("0123456789012345", record.getChar("test"));
+    }
+
+    @Test
+    void testSetVarcharColumnOverSize() {
+        Record record = new Record(new Table("test_table", new Column[]{
+                new Column(Column.DataType.VARCHAR, "test", 16)
+        }));
+        record.setVarchar("test", "01234567890123456789");
+
+        assertEquals("0123456789012345", record.getVarchar("test"));
+    }
+
+    @Test
     void testSingleCharColumnRecordToBytes() {
         Record record = new Record(new Table("test_table", new Column[]{
                 new Column(Column.DataType.CHAR, "test", 16)
