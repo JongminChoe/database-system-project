@@ -1,9 +1,6 @@
 package MyDBMS;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,10 +11,19 @@ import static org.junit.jupiter.api.Assertions.*;
 class FilePoolTest {
     private static final String TABLE_NAME = "test_table";
 
+    @BeforeAll
+    static void BeforeAll() {
+        try {
+            FilePool.getInstance().close();
+        } catch (IOException e) {
+            // e.printStackTrace();
+        }
+    }
+
     @Test
     @Order(1)
     void testWrite() {
-        assertDoesNotThrow(() -> FilePool.getInstance().write(TABLE_NAME, 0, new byte[]{ 0, 1, 2, 3 }));
+        assertDoesNotThrow(() -> FilePool.getInstance().write(TABLE_NAME, 0, new byte[]{0, 1, 2, 3}));
     }
 
     @Test
