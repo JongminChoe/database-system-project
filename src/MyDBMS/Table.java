@@ -1,10 +1,7 @@
 package MyDBMS;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,7 +28,7 @@ public class Table {
                     }
                     return next;
                 },
-                HashMap::new
+                LinkedHashMap::new
         ));
         if (primaryColumn != null && !this.columns.containsKey(primaryColumn)) {
             throw new IllegalArgumentException("primary column does not exists in columns");
