@@ -80,6 +80,14 @@ class DBMSTest {
 
     @Test
     @Order(5)
+    void testFindRecord() {
+        Record[] records = DBMS.getInstance().queryTable("test_table").find("key1").get();
+        assertEquals(1, records.length);
+        assertEquals("key1", records[0].getVarchar("primary_key"));
+    }
+
+    @Test
+    @Order(5)
     void testSelectWhereRecord() {
         Record[] records = DBMS.getInstance().queryTable("test_table").where("primary_key", "key1").get();
         assertEquals(1, records.length);

@@ -146,6 +146,10 @@ public class DBMS implements Closeable {
             return table.addRecord(record);
         }
 
+        public QueryBuilder find(Object value) {
+            return this.where(this.getTable().getPrimaryColumn(), value);
+        }
+
         private QueryBuilder where(String column, String operator, Object value) {
             this.whereColumn = column;
             this.whereOperator = operator;
