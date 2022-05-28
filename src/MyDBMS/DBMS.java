@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class DBMS implements Closeable {
@@ -181,6 +182,59 @@ public class DBMS implements Closeable {
                 case "!=", "IS NOT" -> table.whereNot(this.whereColumn, this.whereValue);
                 default -> table.getAllRecords().toArray(Record[]::new);
             };
+        }
+
+        public Record[] getAndPrint() {
+            Record[] records = this.get();
+            Column[] columns = this.getTable().getColumns();
+
+            // calculate column size
+            HashMap<String, Integer> columnSize = new HashMap<>(columns.length);
+            for (Column column : columns) {
+                columnSize.put(column.getName(), column.getName().length());
+            }
+            for (Record record : records) {
+                for (Column column : columns) {
+                    String value = switch (column.getType()) {
+                        case CHAR -> record.getChar(column.getName());
+                        case VARCHAR -> record.getVarchar(column.getName());
+                    };
+                    String nullSafeValue = value == null ? "(null)" : value;
+                    columnSize.computeIfPresent(column.getName(), (k, v) -> Math.max(v, nullSafeValue.length()));
+                }
+            }
+
+            // print header
+            for (Column column : columns) {
+                System.out.print("+" + "-".repeat(columnSize.get(column.getName()) + 2));
+            }
+            System.out.println("+");
+            for (Column column : columns) {
+                System.out.format("| %-" + columnSize.get(column.getName()) + "s ", column.getName());
+            }
+            System.out.println("|");
+            for (Column column : columns) {
+                System.out.print("+" + "-".repeat(columnSize.get(column.getName()) + 2));
+            }
+            System.out.println("+");
+            // print data
+            for (Record record : records) {
+                for (Column column : columns) {
+                    String value = switch (column.getType()) {
+                        case CHAR -> record.getChar(column.getName());
+                        case VARCHAR -> record.getVarchar(column.getName());
+                    };
+                    String nullSafeValue = value == null ? "(null)" : value;
+                    System.out.format("| %-" + columnSize.get(column.getName()) + "s ", nullSafeValue);
+                }
+                System.out.println("|");
+            }
+            for (Column column : columns) {
+                System.out.print("+" + "-".repeat(columnSize.get(column.getName()) + 2));
+            }
+            System.out.println("+");
+
+            return records;
         }
 
         public boolean delete() {
