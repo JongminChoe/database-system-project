@@ -94,7 +94,7 @@ class TableTest {
         Record record = new Record(table);
         record.setChar("test", "hello world");
 
-        table.addRecord(record);
+        assertTrue(table.addRecord(record));
 
         Record[] records = table.getAllRecords().toArray(Record[]::new);
         assertArrayEquals(new Record[]{record}, records);
@@ -108,8 +108,8 @@ class TableTest {
         Record record = new Record(table);
         record.setVarchar("primary_key", "hello world");
 
-        table.addRecord(record);
-        table.addRecord(record);
+        assertTrue(table.addRecord(record));
+        assertFalse(table.addRecord(record));
 
         Record[] records = table.getAllRecords().toArray(Record[]::new);
         assertArrayEquals(new Record[]{record}, records);
@@ -123,8 +123,8 @@ class TableTest {
         Record record1 = new Record(table).setChar("test", "hello world1");
         Record record2 = new Record(table).setChar("test", "hello world2");
 
-        table.addRecord(record1);
-        table.addRecord(record2);
+        assertTrue(table.addRecord(record1));
+        assertTrue(table.addRecord(record2));
 
         Record[] records = table.getAllRecords().toArray(Record[]::new);
         assertArrayEquals(new Record[]{record1, record2}, records);

@@ -62,14 +62,14 @@ public class Table {
                 .flatMap(page -> new SlottedPage(this, page.getPayload()).getRecords().stream());
     }
 
-    public void addRecord(Record record) {
+    public boolean addRecord(Record record) {
         if (this.getPrimaryColumn() != null) {
             Object primaryKey = switch (this.columns.get(this.getPrimaryColumn()).getType()) {
                 case CHAR -> record.getChar(this.getPrimaryColumn());
                 case VARCHAR -> record.getVarchar(this.getPrimaryColumn());
             };
             if (this.find(primaryKey) != null) {
-                return;
+                return false;
             }
         }
 
@@ -83,7 +83,7 @@ public class Table {
                     bufferPage = BufferManager.getInstance().getEmptyPage(this.getTableName(), i);
                 } catch (IOException ex) {
                     // unknown error
-                    break;
+                    return false;
                 }
             }
             SlottedPage slottedPage = new SlottedPage(this, bufferPage.getPayload());
@@ -94,7 +94,7 @@ public class Table {
                 continue;
             }
             bufferPage.setPayload(slottedPage.toByteArray());
-            break;
+            return true;
         }
     }
 
