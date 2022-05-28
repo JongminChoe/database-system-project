@@ -148,6 +148,23 @@ class TableTest {
     }
 
     @Test
+    void testWhereCharNot() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "char_column", 16),
+                new Column(Column.DataType.VARCHAR, "varchar_column", 16)
+        });
+        Record record1 = new Record(table).setChar("char_column", "char1").setVarchar("varchar_column", "varchar1");
+        Record record2 = new Record(table).setChar("char_column", "char2").setVarchar("varchar_column", "varchar2");
+
+        table.addRecord(record1);
+        table.addRecord(record2);
+
+        assertArrayEquals(new Record[]{record2}, table.whereNot("char_column", "char1           "));
+        assertArrayEquals(new Record[]{record1}, table.whereNot("char_column", "char2           "));
+        assertArrayEquals(new Record[]{record1, record2}, table.whereNot("char_column", "char3           "));
+    }
+
+    @Test
     void testWhereCharNull() {
         Table table = new Table("test_table", new Column[]{
                 new Column(Column.DataType.CHAR, "char_column", 16),
@@ -177,6 +194,23 @@ class TableTest {
         assertArrayEquals(new Record[]{record1}, table.where("varchar_column", "varchar1"));
         assertArrayEquals(new Record[]{record2}, table.where("varchar_column", "varchar2"));
         assertArrayEquals(new Record[]{}, table.where("varchar_column", "varchar3"));
+    }
+
+    @Test
+    void testWhereVarcharNot() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "char_column", 16),
+                new Column(Column.DataType.VARCHAR, "varchar_column", 16)
+        });
+        Record record1 = new Record(table).setChar("char_column", "char1").setVarchar("varchar_column", "varchar1");
+        Record record2 = new Record(table).setChar("char_column", "char2").setVarchar("varchar_column", "varchar2");
+
+        table.addRecord(record1);
+        table.addRecord(record2);
+
+        assertArrayEquals(new Record[]{record2}, table.whereNot("varchar_column", "varchar1"));
+        assertArrayEquals(new Record[]{record1}, table.whereNot("varchar_column", "varchar2"));
+        assertArrayEquals(new Record[]{record1, record2}, table.whereNot("varchar_column", "varchar3"));
     }
 
     @Test
@@ -217,7 +251,7 @@ class TableTest {
                 new Column(Column.DataType.VARCHAR, "varchar_column", 16)
         });
 
-        assertFalse(table.deleteWhereChar("char_column", "char1           "));
+        assertEquals(0, table.delete("char_column", "char1           "));
     }
 
     @Test
@@ -232,11 +266,30 @@ class TableTest {
         table.addRecord(record1);
         table.addRecord(record2);
 
-        assertTrue(table.deleteWhereChar("char_column", "char1           "));
-        assertFalse(table.deleteWhereChar("char_column", "char1           "));
+        assertEquals(1, table.delete("char_column", "char1           "));
+        assertEquals(0, table.delete("char_column", "char1           "));
 
         assertEquals(0, table.where("char_column", "char1           ").length);
         assertArrayEquals(new Record[]{record2}, table.where("char_column", "char2           "));
+    }
+
+    @Test
+    void testDeleteWhereCharNot() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "char_column", 16),
+                new Column(Column.DataType.VARCHAR, "varchar_column", 16)
+        });
+        Record record1 = new Record(table).setChar("char_column", "char1").setVarchar("varchar_column", "varchar1");
+        Record record2 = new Record(table).setChar("char_column", "char2").setVarchar("varchar_column", "varchar2");
+
+        table.addRecord(record1);
+        table.addRecord(record2);
+
+        assertEquals(1, table.deleteNot("char_column", "char1           "));
+        assertEquals(0, table.deleteNot("char_column", "char1           "));
+
+        assertEquals(0, table.whereNot("char_column", "char1           ").length);
+        assertArrayEquals(new Record[]{record1}, table.getAllRecords().toArray(Record[]::new));
     }
 
     @Test
@@ -251,11 +304,30 @@ class TableTest {
         table.addRecord(record1);
         table.addRecord(record2);
 
-        assertTrue(table.deleteWhereVarchar("varchar_column", "varchar1"));
-        assertFalse(table.deleteWhereVarchar("varchar_column", "varchar1"));
+        assertEquals(1, table.delete("varchar_column", "varchar1"));
+        assertEquals(0, table.delete("varchar_column", "varchar1"));
 
         assertEquals(0, table.where("varchar_column", "varchar1").length);
         assertArrayEquals(new Record[]{record2}, table.where("varchar_column", "varchar2"));
+    }
+
+    @Test
+    void testDeleteWhereVarcharNot() {
+        Table table = new Table("test_table", new Column[]{
+                new Column(Column.DataType.CHAR, "char_column", 16),
+                new Column(Column.DataType.VARCHAR, "varchar_column", 16)
+        });
+        Record record1 = new Record(table).setChar("char_column", "char1").setVarchar("varchar_column", "varchar1");
+        Record record2 = new Record(table).setChar("char_column", "char2").setVarchar("varchar_column", "varchar2");
+
+        table.addRecord(record1);
+        table.addRecord(record2);
+
+        assertEquals(1, table.deleteNot("varchar_column", "varchar1"));
+        assertEquals(0, table.deleteNot("varchar_column", "varchar1"));
+
+        assertEquals(0, table.whereNot("varchar_column", "varchar1").length);
+        assertArrayEquals(new Record[]{record1}, table.getAllRecords().toArray(Record[]::new));
     }
 
     @Test

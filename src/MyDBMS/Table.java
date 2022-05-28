@@ -112,13 +112,21 @@ public class Table {
     }
 
     public Record[] where(String column, Object value) {
+        return this.where(column, value, false);
+    }
+
+    public Record[] whereNot(String column, Object value) {
+        return this.where(column, value, true);
+    }
+
+    private Record[] where(String column, Object value, boolean not) {
         if (!this.columns.containsKey(column)) {
             throw new IllegalArgumentException("Column [" + column + "] does not exists");
         }
 
         return switch (this.columns.get(column).getType()) {
-            case CHAR -> this.getAllRecords().filter(record -> Objects.equals(record.getChar(column), value)).toArray(Record[]::new);
-            case VARCHAR -> this.getAllRecords().filter(record -> Objects.equals(record.getVarchar(column), value)).toArray(Record[]::new);
+            case CHAR -> this.getAllRecords().filter(record -> not ^ Objects.equals(record.getChar(column), value)).toArray(Record[]::new);
+            case VARCHAR -> this.getAllRecords().filter(record -> not ^ Objects.equals(record.getVarchar(column), value)).toArray(Record[]::new);
         };
     }
 
@@ -127,66 +135,44 @@ public class Table {
             return false;
         }
 
-        return switch (this.columns.get(this.getPrimaryColumn()).getType()) {
-            case CHAR -> this.deleteWhereChar(this.getPrimaryColumn(), (String) primaryKey);
-            case VARCHAR -> this.deleteWhereVarchar(this.getPrimaryColumn(), (String) primaryKey);
-        };
+        return this.delete(this.getPrimaryColumn(), primaryKey) > 0;
     }
 
-    public boolean deleteWhereChar(String column, String value) {
+    public int delete(String column, Object value) {
+        return this.delete(column, value, false);
+    }
+
+    public int deleteNot(String column, Object value) {
+        return this.delete(column, value, true);
+    }
+
+    private int delete(String column, Object value, boolean not) {
         if (!this.columns.containsKey(column)) {
             throw new IllegalArgumentException("Column [" + column + "] does not exists");
         }
-        if (this.columns.get(column).getType() != Column.DataType.CHAR) {
-            throw new IllegalArgumentException("Column [" + column + "] is not CHAR type");
-        }
 
+        int deleted = 0;
         for (int i = 0; ; i++) {
             BufferPage bufferPage;
             try {
                 bufferPage = BufferManager.getInstance().getPage(this.getTableName(), i);
             } catch (IOException e) {
                 // end of file
-                break;
+                return deleted;
             }
             SlottedPage slottedPage = new SlottedPage(this, bufferPage.getPayload());
             for (Record record : slottedPage.getRecords()) {
-                if (Objects.equals(record.getChar(column), value)) {
+                Object columnValue = switch (this.columns.get(column).getType()) {
+                    case CHAR -> record.getChar(column);
+                    case VARCHAR -> record.getVarchar(column);
+                };
+                if (not ^ Objects.equals(columnValue, value)) {
                     slottedPage.removeRecord(record);
                     bufferPage.setPayload(slottedPage.toByteArray());
-                    return true;
+                    deleted++;
                 }
             }
         }
-        return false;
-    }
-
-    public boolean deleteWhereVarchar(String column, String value) {
-        if (!this.columns.containsKey(column)) {
-            throw new IllegalArgumentException("Column [" + column + "] does not exists");
-        }
-        if (this.columns.get(column).getType() != Column.DataType.VARCHAR) {
-            throw new IllegalArgumentException("Column [" + column + "] is not VARCHAR type");
-        }
-
-        for (int i = 0; ; i++) {
-            BufferPage bufferPage;
-            try {
-                bufferPage = BufferManager.getInstance().getPage(this.getTableName(), i);
-            } catch (IOException e) {
-                // end of file
-                break;
-            }
-            SlottedPage slottedPage = new SlottedPage(this, bufferPage.getPayload());
-            for (Record record : slottedPage.getRecords()) {
-                if (Objects.equals(record.getVarchar(column), value)) {
-                    slottedPage.removeRecord(record);
-                    bufferPage.setPayload(slottedPage.toByteArray());
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public void flush() throws IOException {

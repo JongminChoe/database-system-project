@@ -133,7 +133,7 @@ public class Dictionary {
     public void deleteTable(String tableName) {
         this.tables.remove(tableName).forceFlush();
         this.getTable(TABLE_DICTIONARY).destroy(tableName);
-        this.getTable(ATTRIBUTE_DICTIONARY).deleteWhereVarchar("table", tableName);
+        this.getTable(ATTRIBUTE_DICTIONARY).delete("table", tableName);
     }
 
     public void flush() throws IOException {
