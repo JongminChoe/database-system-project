@@ -203,7 +203,7 @@ public class DBMS implements Closeable {
                 if (this.whereValue == null) {
                     query.append("NULL");
                 } else {
-                    query.append(this.whereValue);
+                    query.append("'").append(((String) this.whereValue).replace("'", "\\'")).append("'");
                 }
             }
             return query.toString();
