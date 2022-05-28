@@ -1,6 +1,7 @@
 package MyDBMS;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +21,7 @@ class BufferPageTest {
     @Test
     void testPageMarkedAsDirtyWhenPayloadChanges() {
         assertDoesNotThrow(() -> {
-            BufferPage page = BufferManager.getInstance().getEmptyPage("test_table", 0);
+            BufferPage page = DBMS.getInstance().getBufferManager().getEmptyPage("test_table", 0);
 
             assertFalse(page.isDirty());
 
@@ -32,6 +33,6 @@ class BufferPageTest {
 
     @Test
     void testIndexOutOfFileBound() {
-        assertThrows(IOException.class, () -> BufferManager.getInstance().getPage("test_table", 0));
+        assertThrows(IOException.class, () -> DBMS.getInstance().getBufferManager().getPage("test_table", 0));
     }
 }

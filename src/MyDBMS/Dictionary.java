@@ -12,17 +12,9 @@ public class Dictionary {
 
     private final HashMap<String, Table> tables;
 
-    private Dictionary() {
+    public Dictionary() {
         this.tables = new HashMap<>();
         this.reload();
-    }
-
-    public static Dictionary getInstance() {
-        return LazyHolder.INSTANCE;
-    }
-
-    private static class LazyHolder {
-        private static final Dictionary INSTANCE = new Dictionary();
     }
 
     public void reload() {

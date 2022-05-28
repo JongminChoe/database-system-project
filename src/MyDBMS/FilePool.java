@@ -12,16 +12,8 @@ public class FilePool implements Closeable {
 
     private final LinkedHashMap<String, RandomAccessFile> pool;
 
-    private FilePool() {
+    public FilePool() {
         this.pool = new LinkedHashMap<>(MAX_OPEN_FILE);
-    }
-
-    public static FilePool getInstance() {
-        return LazyHolder.INSTANCE;
-    }
-
-    private static class LazyHolder {
-        private static final FilePool INSTANCE = new FilePool();
     }
 
     public byte[] read(String fileName, long offset, int length) throws IOException {

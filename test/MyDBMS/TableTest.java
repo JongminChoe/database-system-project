@@ -26,7 +26,7 @@ class TableTest {
 
     @BeforeEach
     void BeforeEach() {
-        BufferManager.getInstance().forceFlush();
+        DBMS.getInstance().getBufferManager().forceFlush();
     }
 
     @Test

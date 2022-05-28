@@ -53,7 +53,7 @@ public class Table {
                 .iterate(0, n -> n + 1)
                 .map(i -> {
                     try {
-                        return BufferManager.getInstance().getPage(this.getTableName(), i);
+                        return DBMS.getInstance().getBufferManager().getPage(this.getTableName(), i);
                     } catch (IOException e) {
                         return null;
                     }
@@ -76,11 +76,11 @@ public class Table {
         for (int i = 0; ; i++) {
             BufferPage bufferPage;
             try {
-                bufferPage = BufferManager.getInstance().getPage(this.getTableName(), i);
+                bufferPage = DBMS.getInstance().getBufferManager().getPage(this.getTableName(), i);
             } catch (IOException e) {
                 // end of file
                 try {
-                    bufferPage = BufferManager.getInstance().getEmptyPage(this.getTableName(), i);
+                    bufferPage = DBMS.getInstance().getBufferManager().getEmptyPage(this.getTableName(), i);
                 } catch (IOException ex) {
                     // unknown error
                     return false;
@@ -152,7 +152,7 @@ public class Table {
         for (int i = 0; ; i++) {
             BufferPage bufferPage;
             try {
-                bufferPage = BufferManager.getInstance().getPage(this.getTableName(), i);
+                bufferPage = DBMS.getInstance().getBufferManager().getPage(this.getTableName(), i);
             } catch (IOException e) {
                 // end of file
                 return deleted;
@@ -176,7 +176,7 @@ public class Table {
         for (int i = 0; ; i++) {
             BufferPage bufferPage;
             try {
-                bufferPage = BufferManager.getInstance().getPage(this.getTableName(), i);
+                bufferPage = DBMS.getInstance().getBufferManager().getPage(this.getTableName(), i);
             } catch (IOException e) {
                 // end of file
                 return true;
@@ -188,11 +188,11 @@ public class Table {
     }
 
     public void flush() throws IOException {
-        BufferManager.getInstance().flush(this.getTableName());
+        DBMS.getInstance().getBufferManager().flush(this.getTableName());
     }
 
     public void forceFlush() {
-        BufferManager.getInstance().forceFlush(this.getTableName());
+        DBMS.getInstance().getBufferManager().forceFlush(this.getTableName());
     }
 
     @Override

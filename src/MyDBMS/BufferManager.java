@@ -10,16 +10,8 @@ public class BufferManager implements Closeable {
 
     public Stack<BufferPage> buffer;
 
-    private BufferManager() {
+    public BufferManager() {
         this.buffer = new Stack<>();
-    }
-
-    public static BufferManager getInstance() {
-        return LazyHolder.INSTANCE;
-    }
-
-    private static class LazyHolder {
-        private static final BufferManager INSTANCE = new BufferManager();
     }
 
     public BufferPage getPage(String key, long index) throws IOException {
@@ -35,7 +27,7 @@ public class BufferManager implements Closeable {
             this.flushPage(this.buffer.pop());
         }
 
-        byte[] payload = FilePool.getInstance().read(key, index * BufferPage.PAGE_SIZE, BufferPage.PAGE_SIZE);
+        byte[] payload = DBMS.getInstance().getFilePool().read(key, index * BufferPage.PAGE_SIZE, BufferPage.PAGE_SIZE);
         BufferPage page = new BufferPage(key, index, payload);
 
         buffer.push(page);
@@ -108,7 +100,7 @@ public class BufferManager implements Closeable {
     }
 
     private void flushPage(BufferPage page) throws IOException {
-        FilePool.getInstance().write(page.getFileName(), page.getOffset(), page.getPayload());
+        DBMS.getInstance().getFilePool().write(page.getFileName(), page.getOffset(), page.getPayload());
     }
 
     public void forceFlush(String key) {
